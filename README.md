@@ -1,5 +1,7 @@
 # MSiA423 Sample Project Title
+
 Author: Dian Yu
+
 QA: Hanyu Cai
 
 <!-- toc -->
