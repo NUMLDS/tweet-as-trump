@@ -1,11 +1,12 @@
 # MSiA423 Sample Project Title
 
-Author: Dian Yu
+Developer: Dian Yu
 
-QA: Hanyu Cai
+QA Contributions: Hanyu Cai
 
 <!-- toc -->
 
+- [Project charter](#project-charter)
 - [Directory structure](#directory-structure)
 - [Running the app](#running-the-app)
   * [1. Initialize the database](#1-initialize-the-database)
@@ -19,9 +20,32 @@ QA: Hanyu Cai
   * [1. Build the image](#1-build-the-image)
   * [2. Run the container](#2-run-the-container)
   * [3. Kill the container](#3-kill-the-container)
-  * [Workaround for potential Docker problem for Windows.](#workaround-for-potential-docker-problem-for-windows)
 
 <!-- tocstop -->
+
+## Project charter
+
+### Vision
+
+Social media platforms have made it easier than ever for political figures and celebrities to make their voices heard. Since Donald J. Trump declared his candidacy in June 2015, he has used Twitter to criticize, praise, persuade, entertain, and establish his version of events.  Whether one agrees or disagrees with Mr. Trump’s policies and ideas, one may be curious about what it is like to be such a controversial figure on social media and what kind of posts receive the most attention. This web application aims to offer its users the opportunity to hypothetically post tweets in the shoes of Mr. Trump and see the number of favorites and retweets they could expect to get. After having fun trying different tweets on the app, the users would hopefully think a little more about the controversial and inciting nature of social media posts.
+
+### Mission
+The final web app would enable the user to enter a tweet—a small paragraph with less than 280 characters. After the user finishes, the app would output the predicted number of retweets and favorites if Mr. Trump tweeted the message.
+
+The most crucial step in this project is to train a model using Mr. Trump’s previous tweets’ retweets and favorites statistics. The dataset I selected is collected and published on Kaggle by Austin Reese (https://www.kaggle.com/austinreese/trump-tweets). For data pre-processing and model architecture, I expect to apply Natural Language Processing (NLP) techniques, including but not limited to tokenization, embeddings, and long short-term memory (LSTM) models. The final model would take a string of any length smaller than 280 characters as an input and output the predicted retweets and favorites numbers.
+
+It is also worthy of mentioning that the model developed in this project is readily applicable to social media strategy making. It is easy to retrain the model using a new celebrity or policy maker’s social media data. Then, before the user and his/her social media team publish a new post, they can use the application to select the appropriate topic and wording that would attract the most attention. This possibility is not part of my core vision but makes monetization reasonably easy.
+
+### Success criteria
+
+#### Machine learning performance metric
+
+I think Mean Absolute Percentage Error (MAPE) is a good metric for the machine learning model. For example, if the model predicts 1.2 million favorites/retweets for a tweet with 1 million favorites/retweets, the Absolute Percentage Error for this point is 20%. I expect predicting the number of retweets and favorites using the content alone to be a relatively challenging problem since many other factors determine the retweets and favorites, such as time of the day and recent events. Thus, I would view a MAPE smaller than 40% as an indication that a model is ready to go live.
+Although R-squared is also a standard metric for a regression problem like this one, I decide to use MAPE because it is much easier to explain to non-technical audiences.
+
+#### Business outcome metric
+
+Since the web app’s purpose is to create a fun user experience, Daily Active User (DAU) is a great metric to measure user engagement. I expect most users to be one-time users, but I am not worried about growth. Many users will likely share screenshots of their creative tweets on social media and thus introduce more users to the app, creating a positive feedback loop. If the DAU reaches a level high enough, it is reasonable to monetize via advertisements.
 
 ## Directory structure 
 
