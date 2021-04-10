@@ -1,4 +1,4 @@
-# MSiA423 Sample Project Title
+# Tweet as Trump
 
 Developer: Dian Yu
 
