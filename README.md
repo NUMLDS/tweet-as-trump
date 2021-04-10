@@ -40,8 +40,7 @@ It is also worthy of mentioning that the model developed in this project is read
 
 #### Machine learning performance metric
 
-I think Mean Absolute Percentage Error (MAPE) is a good metric for the machine learning model. For example, if the model predicts 1.2 million favorites/retweets for a tweet with 1 million favorites/retweets, the Absolute Percentage Error for this point is 20%. I expect predicting the number of retweets and favorites using the content alone to be a relatively challenging problem since many other factors determine the retweets and favorites, such as time of the day and recent events. Thus, I would view a MAPE smaller than 40% as an indication that a model is ready to go live.
-Although R-squared is also a standard metric for a regression problem like this one, I decide to use MAPE because it is much easier to explain to non-technical audiences.
+I think Mean Absolute Percentage Error (MAPE) is a good metric for the machine learning model. For example, if the model predicts 1.2 million favorites/retweets for a tweet with 1 million favorites/retweets, the Absolute Percentage Error for this point is 20%. I expect predicting the number of retweets and favorites using only tweet content to be a relatively challenging problem since many other factors determine retweets and favorites, such as time of the day and recent events. Thus, I am willing to view a MAPE smaller than 40% as an indication that a model is ready to go live. Although R-squared is also a standard metric for a regression problem like this one, I decide to use MAPE because it is much easier to explain to non-technical audiences.
 
 #### Business outcome metric
 
