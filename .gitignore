@@ -6,9 +6,7 @@ __pycache__/
 .idea/
 .log
 .ipynb_checkpoints/
-
-
-data/*
+venv
 !data/sample/
 !data/external/
 config/local
