@@ -19,7 +19,7 @@ class Tweets(Base):
 
     __tablename__ = 'tweets'
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(String(64), primary_key=True)
     date = Column(DateTime, unique=False, nullable=False)
     content = Column(String(280), unique=False, nullable=False)
     retweets = Column(BigInteger, unique=False, nullable=False)
@@ -74,11 +74,11 @@ class TweetManager:
         """
         Seeds an existing database with additional tweets.
         Args:
-            id (string): Tweet
-            date (str): the first type of that pokemon
-            content (str): the second type of that pokemon
-            retweets (int):
-        Returns:None
+            id (string): Tweet id
+            date (str): date of the tweet
+            content (str): content of the tweet
+            retweets (int): number of retweets
+        Returns: None
         """
         session = self.session
         content = Tweets(id=id, date=date, content=content, retweets=retweets)

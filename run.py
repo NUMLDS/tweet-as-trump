@@ -1,11 +1,12 @@
 import argparse
-
 import logging.config
-logging.config.fileConfig('config/logging/local.conf')
-logger = logging.getLogger('penny-lane-pipeline')
 
-from src.add_songs import TrackManager, create_db
+logging.config.fileConfig('config/logging/local.conf')
+logger = logging.getLogger('trump-tweets-pipeline')
+
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
+from src.add_tweets import TweetManager, create_db
+
 
 if __name__ == '__main__':
 
@@ -20,10 +21,11 @@ if __name__ == '__main__':
 
     # Sub-parser for ingesting new data
     sb_ingest = subparsers.add_parser("ingest", description="Add data to database")
-    sb_ingest.add_argument("--artist", default="Emancipator", help="Artist of song to be added")
-    sb_ingest.add_argument("--title", default="Minor Cause", help="Title of song to be added")
-    sb_ingest.add_argument("--album", default="Dusk to Dawn", help="Album of song being added")
-    sb_ingest.add_argument("--engine_string", default='sqlite:///data/tracks.db',
+    sb_ingest.add_argument("--id", help="ID of tweet being added")
+    sb_ingest.add_argument("--date", help="Date of tweet being added")
+    sb_ingest.add_argument("--content", help="Content of tweet being added")
+    sb_ingest.add_argument("--retweets", help="Number of retweets of tweet being added")
+    sb_ingest.add_argument("--engine_string", default=SQLALCHEMY_DATABASE_URI,
                            help="SQLAlchemy connection URI for database")
 
     args = parser.parse_args()
@@ -31,8 +33,8 @@ if __name__ == '__main__':
     if sp_used == 'create_db':
         create_db(args.engine_string)
     elif sp_used == 'ingest':
-        tm = TrackManager(engine_string=args.engine_string)
-        tm.add_track(args.title, args.artist, args.album)
+        tm = TweetManager(engine_string=args.engine_string)
+        tm.add_tweet(args.id, args.date, args.content, args.retweets)
         tm.close()
     else:
         parser.print_help()
