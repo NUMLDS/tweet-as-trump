@@ -2,7 +2,7 @@ import logging.config
 
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, MetaData
+from sqlalchemy import Column, BigInteger, DateTime, String
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 
@@ -12,23 +12,23 @@ logger.setLevel("INFO")
 Base = declarative_base()
 
 
-class Tracks(Base):
-    """Create a data model for the database to be set up for capturing songs
-
+class Tweets(Base):
+    """
+    Create a data model for the database to be set up for storing Trump's tweets
     """
 
-    __tablename__ = 'tracks'
+    __tablename__ = 'tweets'
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String(100), unique=False, nullable=False)
-    artist = Column(String(100), unique=False, nullable=False)
-    album = Column(String(100), unique=False, nullable=True)
+    id = Column(BigInteger, primary_key=True)
+    date = Column(DateTime, unique=False, nullable=False)
+    content = Column(String(280), unique=False, nullable=False)
+    retweets = Column(BigInteger, unique=False, nullable=False)
 
     def __repr__(self):
-        return '<Track %r>' % self.title
+        return '<Tweet id %r>' % id
 
 
-def create_db(engine_string: str) -> None:
+def create_db(engine_string):
     """Create database from provided engine string
 
     Args:
@@ -43,7 +43,7 @@ def create_db(engine_string: str) -> None:
     logger.info("Database created.")
 
 
-class TrackManager:
+class TweetManager:
 
     def __init__(self, app=None, engine_string=None):
         """
@@ -61,28 +61,27 @@ class TrackManager:
         else:
             raise ValueError("Need either an engine string or a Flask app to initialize")
 
-    def close(self) -> None:
-        """Closes session
+    def close(self):
+        """
+        Closes session.
 
         Returns: None
 
         """
         self.session.close()
 
-    def add_track(self, title: str, artist: str, album: str) -> None:
-        """Seeds an existing database with additional songs.
-
-        Args:
-            title: str - Title of song
-            artist: str - Artist
-            album: str - Album title
-
-        Returns:None
-
+    def add_tweet(self, id, date, content, retweets):
         """
-
+        Seeds an existing database with additional tweets.
+        Args:
+            id (string): Tweet
+            date (str): the first type of that pokemon
+            content (str): the second type of that pokemon
+            retweets (int):
+        Returns:None
+        """
         session = self.session
-        track = Tracks(artist=artist, album=album, title=title)
-        session.add(track)
+        content = Tweets(id=id, date=date, content=content, retweets=retweets)
+        session.add(content)
         session.commit()
-        logger.info("%s by %s from album, %s, added to database", title, artist, album)
+        logger.info("Tweet with id %s, added to database", id)

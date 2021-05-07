@@ -6,6 +6,7 @@ __pycache__/
 .idea/
 .log
 .ipynb_checkpoints/
+.mysqlconfig
 venv
 !data/sample/
 !data/external/
