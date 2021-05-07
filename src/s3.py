@@ -65,10 +65,10 @@ def upload_file_to_s3(local_path, s3path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--s3path', default='s3://2021-msia423-yu-dian/trump_tweets.csv',
-                        help="s3 data path to download or upload data")
-    parser.add_argument('--local_path', default='data/raw/trump_tweets.csv',
-                        help="local data path to store or upload data")
+    parser.add_argument('--s3path', default='s3://2021-msia423-yu-dian/realdonaldtrump.csv',
+                        help="s3 file path to upload data")
+    parser.add_argument('--local_path', default='data/raw/realdonaldtrump.csv',
+                        help="local file path where the data is stored")
     args = parser.parse_args()
 
     upload_file_to_s3(args.local_path, args.s3path)
