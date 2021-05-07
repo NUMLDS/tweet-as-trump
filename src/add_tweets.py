@@ -1,10 +1,10 @@
 import logging.config
 
 import sqlalchemy
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, BigInteger, DateTime, String
-from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, BigInteger, DateTime, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -13,10 +13,7 @@ Base = declarative_base()
 
 
 class Tweets(Base):
-    """
-    Create a data model for the database to be set up for storing Trump's tweets
-    """
-
+    """Create a data model for the database to be set up for storing tweets."""
     __tablename__ = 'tweets'
 
     id = Column(String(64), primary_key=True)
@@ -29,12 +26,13 @@ class Tweets(Base):
 
 
 def create_db(engine_string):
-    """Create database from provided engine string
+    """Create database from provided engine string.
 
     Args:
-        engine_string: str - Engine string
+        engine_string (str): Engine string.
 
-    Returns: None
+    Returns:
+        None
 
     """
     engine = sqlalchemy.create_engine(engine_string)
@@ -46,10 +44,12 @@ def create_db(engine_string):
 class TweetManager:
 
     def __init__(self, app=None, engine_string=None):
-        """
+        """Initialize a TweetManager object.
+
         Args:
-            app: Flask - Flask app
-            engine_string: str - Engine string
+            app (Flask): Flask app.
+            engine_string (str): Engine string.
+
         """
         if app:
             self.db = SQLAlchemy(app)
@@ -62,23 +62,26 @@ class TweetManager:
             raise ValueError("Need either an engine string or a Flask app to initialize")
 
     def close(self):
-        """
-        Closes session.
+        """Close session.
 
-        Returns: None
+        Returns:
+            None
 
         """
         self.session.close()
 
     def add_tweet(self, id, date, content, retweets):
-        """
-        Seeds an existing database with additional tweets.
+        """Seed an existing database with additional tweets.
+
         Args:
-            id (string): Tweet id
-            date (str): date of the tweet
-            content (str): content of the tweet
-            retweets (int): number of retweets
-        Returns: None
+            id (str): ID of the tweet
+            date (str): Date of the tweet
+            content (str): Content of the tweet
+            retweets (str): Number of retweets as a String
+
+        Returns:
+            None
+
         """
         session = self.session
         content = Tweets(id=id, date=date, content=content, retweets=retweets)
