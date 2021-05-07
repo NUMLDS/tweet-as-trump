@@ -4,6 +4,8 @@ Developer: Dian Yu
 
 QA Contributions: Hanyu Cai
 
+![alt text](https://github.com/MSIA/2021-msia423-yu-dian-project/blob/develop/figures/trump_tweet.png)
+
 <!-- toc -->
 
 - [Project charter](#project-charter)
