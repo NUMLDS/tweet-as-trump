@@ -38,6 +38,3 @@ if __name__ == '__main__':
         tm.close()
     else:
         parser.print_help()
-
-
-
