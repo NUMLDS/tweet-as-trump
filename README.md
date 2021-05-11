@@ -141,10 +141,9 @@ docker run -it tweets_data run.py create_db
 
 The default engine string (SQLAlchemy connection string) to the database file is `sqlite:///data/tweets.db`, where the three `///` denote that it is a relative path to where the code is being run (which is from the root of this directory). 
 
-You can provide a customized engine string as an environment variable:
+You can also provide a customized engine string:
 ```bash
-export SQLALCHEMY_DATABASE_URI="YOUR_ENGINE_STRING"
-docker run -it -e SQLALCHEMY_DATABASE_URI tweets_data run.py create_db
+docker run -it -e SQLALCHEMY_DATABASE_URI tweets_data run.py create_db --engine_string={your_engine_string}
 ```
 
 ### 6. Initialize database in RDS instance
