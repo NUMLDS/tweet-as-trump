@@ -123,13 +123,14 @@ export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY"
 #### Upload file to S3
 To upload the `realdonaltrump.csv` file to a configurable S3 bucket:
 ```bash
-docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data src/s3.py --s3path={your_s3_path}
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data run.py upload_data
 ```
-where `{your_s3_path}` should be your S3 file path to upload the data. The default for the option is `"s3://2021-msia423-yu-dian/realdonaldtrump.csv"`
 
-You may also specify the `--local_path` option, the default of which is `"data/raw/realdonaldtrump.csv"`:
+You may also specify the `--s3_path` and `--local_path` options, the default of which are respectively `"s3://2021-msia423-yu-dian/realdonaldtrump.csv"` and `"data/raw/realdonaldtrump.csv"`:
 ```bash
-docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data src/s3.py --s3path={your_s3_path} --local_path={your_local_path}
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data run.py upload_data \
+    --s3path={your_s3_path} \
+    --local_path={your_local_path}
 ```
 
 ### 5. Initialize database locally
