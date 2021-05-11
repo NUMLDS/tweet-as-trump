@@ -25,10 +25,13 @@ class Tweets(Base):
 
 def create_db(engine_string):
     """Create database from provided engine string.
+
     Args:
         engine_string (str): Engine string.
+
     Returns:
         None
+
     """
     engine = sqlalchemy.create_engine(engine_string)
 
