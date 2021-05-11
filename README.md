@@ -31,7 +31,7 @@ QA Contributions: Hanyu Cai
 
 ### 1. Vision
 
-Social media platforms have made it easier than ever for political figures and celebrities to make their voices heard. Since Donald J. Trump declared his candidacy in June 2015, he has used Twitter to criticize, praise, persuade, entertain, and establish his version of events.  Whether one agrees or disagrees with the former president’s policies and ideas, one may be curious about what it is like to be such a controversial figure on social media and what kind of posts receive the most attention. This web application aims to offer its users the opportunity to hypothetically post tweets in the shoes of Mr. Trump and see the number of favorites and retweets they could expect to get. After having fun trying different tweets on the app, the users would hopefully think a little more about the controversial and inciting nature of social media posts.
+Social media platforms have made it easier than ever for political figures and celebrities to make their voices heard. Since Donald J. Trump declared his candidacy in June 2015, he has used Twitter to criticize, praise, persuade, entertain, and establish his version of events.  Whether one agrees or disagrees with the former president’s policies and ideas, one may be curious about what it is like to be such a controversial figure on social media and what kind of posts receive the most attention. This web application aims to offer its users the opportunity to hypothetically post tweets in the shoes of Mr. Trump and see the number of retweets they could expect to get. After having fun trying different tweets on the app, the users would hopefully think a little more about the controversial and inciting nature of social media posts.
 
 ### 2. Mission
 The final web app would enable the user to enter a tweet—a small paragraph with less than 280 characters. After the user finishes, the app would output the predicted number of retweets if Mr. Trump tweeted the message.
@@ -91,6 +91,7 @@ Since the web app’s purpose is to create a fun user experience, Daily Active U
 │   ├── s3.py/                        <- Python script for uploading raw data to S3
 │
 ├── test/                             <- Files necessary for running model tests (see documentation below) 
+│   ├── test_s3.py/                   <- Python script for testing s3-related functionalities
 │
 ├── app.py                            <- Flask wrapper for running the model 
 ├── run.py                            <- Simplifies the execution of one or more of the src scripts  
