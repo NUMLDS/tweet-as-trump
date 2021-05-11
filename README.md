@@ -146,6 +146,12 @@ You can also provide a customized engine string:
 docker run -it tweets_data run.py create_db --engine_string={your_engine_string}
 ```
 
+Or alternatively:
+```bash
+export SQLALCHEMY_DATABASE_URI="YOUR_ENGING_STRING"
+docker run -it -e SQLALCHEMY_DATABASE_URI tweets_data run.py create_db
+```
+
 ### 6. Initialize database in RDS instance
 #### Configure environment variables
 To configure MYSQL-related environment variables:
