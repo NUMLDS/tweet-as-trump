@@ -143,7 +143,7 @@ The default engine string (SQLAlchemy connection string) to the database file is
 
 You can also provide a customized engine string:
 ```bash
-docker run -it -e SQLALCHEMY_DATABASE_URI tweets_data run.py create_db --engine_string={your_engine_string}
+docker run -it tweets_data run.py create_db --engine_string={your_engine_string}
 ```
 
 ### 6. Initialize database in RDS instance
