@@ -1,23 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <title>Tweet as Trump</title>
-  </head>
+</head>
 
 <body>
   <center><a align="middle">
     <img src="{{ url_for('static', filename='tweet_head.png') }}" width="50%" height="50%">
   </a></center>
 
-    <div class="alert alert-danger" role="alert" align="middle">
-      <p class="alert-link">We're sorry, there was a problem accessing the database. </p>
-    </div>
-    <center>
-      <a href="{{ url_for('index') }}">Back</a>
-    </center>
+  <center>
+    <textarea id="tweet_content" name="tweet_content" rows="4" cols="50" maxlength="280">{{ tweet_content }}</textarea>
+    <br>
+    <h6>
+      <br>Predicted Number of Retweets: {{ prediction }}
+    </h6>
+    <a href="{{ url_for('index') }}">Back</a>
+  </center>
 
 </body>
 </html>
