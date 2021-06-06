@@ -4,17 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <title>Tweet as Trump</title>
   </head>
   <body>
     <center><a align="middle">
-      <img src="{{ url_for('static', filename='tweet_head.png') }}" width="50%" height="50%">
+      <img src="{{ url_for('static', filename='tweet_head.png') }}" width="728.25px" height="150px">
     </a></center>
 
     <center><form action="{{ url_for('tweet') }}" method="post">
         <textarea id="tweet_content" name="tweet_content" rows="4" cols="50" maxlength="280"></textarea>
         <br>
-        <input type=submit value="Tweet" class="btn btn-primary" style="margin:30px; margin-left:350px">
+        <input type=submit value="Tweet" class="btn btn-outline-primary" style="margin:30px; margin-left:350px" onclick="this.style.display='none';$('#loading').show();">
+        <br>
+        <div id="loading" style="display:none;"><img src="static/loading.gif" width="45px" height="45px" alt="" /> Predicting Number of Retweets... </div>
     </form></center>
   </body>
 </html>

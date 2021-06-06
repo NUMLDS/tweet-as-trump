@@ -9,14 +9,14 @@
 
 <body>
   <center><a align="middle">
-    <img src="{{ url_for('static', filename='tweet_head.png') }}" width="50%" height="50%">
+    <img src="{{ url_for('static', filename='tweet_head.png') }}" width="728.25px" height="150px">
   </a></center>
 
     <div class="alert alert-danger" role="alert" align="middle">
       <p class="alert-link">We're sorry, there was a problem accessing the database. </p>
     </div>
     <center>
-      <a href="{{ url_for('index') }}">Back</a>
+      <a class="btn btn-outline-primary" href="{{ url_for('index') }}" role="button" style="margin:10px;">Back</a>
     </center>
 
 </body>

@@ -8,16 +8,15 @@
 
 <body>
   <center><a align="middle">
-    <img src="{{ url_for('static', filename='tweet_head.png') }}" width="50%" height="50%">
+    <img src="{{ url_for('static', filename='tweet_head.png') }}" width="728.25px" height="150px">
   </a></center>
 
   <center>
     <textarea id="tweet_content" name="tweet_content" rows="4" cols="50" maxlength="280">{{ tweet_content }}</textarea>
     <br>
-    <h6>
-      <br>Predicted Number of Retweets: {{ prediction }}
-    </h6>
-    <a href="{{ url_for('index') }}">Back</a>
+    <br>Predicted Number of Retweets: {{ prediction }}
+    <br>
+    <a class="btn btn-outline-primary" href="{{ url_for('index') }}" role="button" style="margin:20px;">Back</a>
   </center>
 
 </body>
