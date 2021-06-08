@@ -40,7 +40,6 @@ def upload_file_to_s3(local_path, s3path):
         None
 
     """
-
     s3bucket, s3_just_path = parse_s3(s3path)
 
     s3 = boto3.resource("s3")
@@ -55,7 +54,15 @@ def upload_file_to_s3(local_path, s3path):
 
 
 def download_to_pandas(s3path):
+    """Download file from S3 to a pandas DataFrame.
 
+    Args:
+        s3path (str): The S3 path that points to the file.
+
+    Returns:
+        :py:class:`pandas.DataFrame`: The downloaded data as a DataFrame object.
+
+    """
     try:
         df = pd.read_csv(s3path)
         logger.info('Data downloaded from %s to pandas DataFrame', s3path)

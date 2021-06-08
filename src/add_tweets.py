@@ -2,9 +2,10 @@ import logging.config
 
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, BigInteger, DateTime, String
+from sqlalchemy import Column, Integer, BigInteger, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -16,8 +17,7 @@ class Tweets(Base):
     """Create a data model for the database to be set up for storing tweets."""
     __tablename__ = 'tweets'
 
-    id = Column(String(64), primary_key=True)
-    date = Column(DateTime, unique=False, nullable=False)
+    id = Column(Integer, primary_key=True)
     content = Column(String(280), unique=False, nullable=False)
     retweets = Column(BigInteger, unique=False, nullable=False)
 
@@ -70,12 +70,10 @@ class TweetManager:
         """
         self.session.close()
 
-    def add_tweet(self, id, date, content, retweets):
+    def add_tweet(self, content, retweets):
         """Seed an existing database with additional tweets.
 
         Args:
-            id (str): ID of the tweet
-            date (str): Date of the tweet
             content (str): Content of the tweet
             retweets (str): Number of retweets as a String
 
@@ -84,7 +82,7 @@ class TweetManager:
 
         """
         session = self.session
-        content = Tweets(id=id, date=date, content=content, retweets=retweets)
-        session.add(content)
+        tweet = Tweets(content=content, retweets=retweets)
+        session.add(tweet)
         session.commit()
-        logger.info("Tweet with id %s, added to database", id)
+        logger.info("Successfully added tweet to database.")
