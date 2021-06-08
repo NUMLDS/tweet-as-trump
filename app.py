@@ -36,7 +36,7 @@ def tweet():
     logger.info("User input is '%s'", tweet_content)
 
     # Calculate prediction
-    with open('config/config.yaml', "r") as f:
+    with open(app.config["MODEL_CONFIG"], "r") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     logger.info("Configuration file loaded")
     prediction = predict(tweet_content, **config["predict"]["predict"])
@@ -44,10 +44,9 @@ def tweet():
     # Save user input and predicted retweets to database
     try:
         tweet_manager.add_tweet(content=tweet_content, retweets=prediction)
-        logger.info("New tweet added")
         return render_template('tweet.html', tweet_content=tweet_content, prediction=prediction)
-    except:
-        logger.warning("Unable to add to database, error page returned.")
+    except Exception as e:
+        logger.warning("Unable to add to database, error page returned. Here is the original error: %s", e)
         return render_template('error.html')
 
 
