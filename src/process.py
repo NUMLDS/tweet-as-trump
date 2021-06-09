@@ -1,3 +1,10 @@
+"""The text processing module.
+
+This module provides functionalities to process a single text or a column of texts within a
+DataFrame.
+
+"""
+
 import logging
 import re
 
@@ -19,8 +26,9 @@ def remove_urls(input_str):
         str: Output text with URLs removed.
 
     """
-    url_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|" \
-                r"(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    url_regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)" \
+                r"(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|" \
+                r"(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     output_str = re.sub(url_regex, " ", input_str)
     return output_str
 
@@ -108,7 +116,8 @@ def process_tweet(content, nltk_data_path, download=False):
 
     Args:
         content (str): Content of the tweet.
-        nltk_data_path (str): The path that points to the downloaded NLTK data or where the data should be downloaded.
+        nltk_data_path (str): The path that points to the downloaded NLTK data or where the data
+        should be downloaded.
         download (bool): Whether to download NLTK data.
 
     Returns:
@@ -146,7 +155,8 @@ def process_data(df, content_column, nltk_data_path, download=False):
     Args:
         df (:py:class:`pandas.DataFrame`): The DataFrame to process.
         content_column (str): The name of the content column.
-        nltk_data_path (str): The path that points to the downloaded NLTK data or where the data should be downloaded.
+        nltk_data_path (str): The path that points to the downloaded NLTK data or where the data
+        should be downloaded.
         download (bool): Whether to download NLTK data.
 
     Returns:

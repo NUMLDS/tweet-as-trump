@@ -1,3 +1,10 @@
+"""The data loading module.
+
+This module provides functionalities to load data from S3 with specified columns and combine
+DataFrames while filtering data by date.
+
+"""
+
 import logging
 
 from src.s3 import download_to_pandas
@@ -51,6 +58,7 @@ def combine_data(df1, df2, columns, date_col, start_date, end_date):
     # Select subset by date
     df = df.loc[(df[date_col] >= start_date) & (df[date_col] < end_date)]
     df.drop(date_col, axis=1)
+    df.reset_index(drop=True, inplace=True)
 
     logger.info("Successfully combined DataFrames")
     return df

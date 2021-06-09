@@ -1,3 +1,10 @@
+"""The model training and evaluation module.
+
+This module provides functionalities to prepare data for training, compile and train a LSTM model,
+and evaluate and save the model's performance.
+
+"""
+
 import logging
 import random
 
@@ -9,20 +16,24 @@ from sklearn import model_selection
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
-import tensorflow.keras.backend as K
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
 
 def set_seed(random_seed):
-    # Set random seeds
+    """Seeds random number generators for reproducible model outcome.
+
+    Args:
+        random_seed (int): Pass an int for reproducible output.
+
+    Returns:
+        None
+
+    """
     random.seed(random_seed)
     np.random.seed(random_seed)
     tf.random.set_seed(random_seed)
-    session_conf = tf.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
-    sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
-    K.set_session(sess)
 
 
 def train_test_split(df, content_column, label_column, test_size, random_state):
@@ -36,8 +47,8 @@ def train_test_split(df, content_column, label_column, test_size, random_state):
         random_state (int): Pass an int for reproducible output.
 
     Returns:
-        :obj:`tuple` of :py:class:`numpy.array`: A tuple of training contents, test contents, training targets, and
-        test targets as numpy arrays.
+        :obj:`tuple` of :py:class:`numpy.array`: A tuple of training contents, test contents,
+        training targets, and test targets as numpy arrays.
 
     """
     # Random shuffle to get random validation set in model fitting step
@@ -97,8 +108,8 @@ def tokenize(contents, tokenizer_path, padding_type, max_length):
         max_length (int): Maximum length of all sequences.
 
     Returns:
-        :py:class:`numpy.array` of :py:class:`numpy.array`: An array of arrays, in which each sub-array is the result
-        of tokenizing and padding a input content.
+        :py:class:`numpy.array` of :py:class:`numpy.array`: An array of arrays, in which each
+        sub-array is the result of tokenizing and padding a input content.
 
     """
     # Load tokenizer
@@ -124,9 +135,12 @@ def compile_model(vocab_size, embedding_params, lstm_params, dense_params, outpu
     """Specify the LSTM model architecture and compile the model.
 
     Args:
-        vocab_size (int): The vocabulary size to use in the embedding layer. Calculated when fitting the tokenizer.
-        embedding_params (dict): The parameters for the embedding layer (output_dim, input_length, etc.)
-        lstm_params (dict): The parameters for the LSTM layer (units, return_sequences, recurrent_dropout, etc.)
+        vocab_size (int): The vocabulary size to use in the embedding layer. Calculated when fitting
+        the tokenizer.
+        embedding_params (dict): The parameters for the embedding layer (output_dim, input_length,
+        etc.)
+        lstm_params (dict): The parameters for the LSTM layer (units, return_sequences,
+        recurrent_dropout, etc.)
         dense_params (dict): The parameters for the hidden dense layer (units, activation, etc.)
         output_params (dict): The parameters for the output layer (units, activation, etc.)
         dropout (float): Fraction of the input units to drop.
@@ -170,7 +184,8 @@ def fit_model(model, train_data, train_labels, epochs, verbose, validation_split
 
     """
     logger.info("Fitting neural network model")
-    model.fit(train_data, train_labels, epochs=epochs, verbose=verbose, validation_split=validation_split)
+    model.fit(train_data, train_labels, epochs=epochs, verbose=verbose,
+              validation_split=validation_split)
     model.save(model_path)
     logger.info("Training complete! Model saved to %s", model_path)
 
@@ -196,10 +211,10 @@ def calculate_mape(test_data, test_labels, fitted_model_path, output_path):
 
     logger.info("Calculating predictions using %s test samples", len(test_labels))
     pred = np.round(model.predict(test_data))
-    mape = np.mean(abs(pred - test_labels) / test_labels) * 100
+    mape = round(float(np.mean(abs(pred - test_labels) / test_labels) * 100), 2)
     logger.info("Test MAPE: " + str(mape))
 
-    mape_dict = {"mape": float(mape)}
+    mape_dict = {"mape": mape}
     try:
         logger.info("Saving calculated result")
         with open(output_path, 'w') as f:

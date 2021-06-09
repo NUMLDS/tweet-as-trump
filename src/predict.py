@@ -1,3 +1,9 @@
+"""The prediction module.
+
+This module provides the functionality to calculate predictions using a pre-trained model.
+
+"""
+
 import logging
 
 from tensorflow import keras

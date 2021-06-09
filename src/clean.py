@@ -1,3 +1,9 @@
+"""The data cleaning module.
+
+This module provides functionalities to clean a DataFrame after text processing.
+
+"""
+
 import logging
 import re
 
@@ -14,7 +20,8 @@ def remove_outliers(df, column, cutoff, left_tail=True):
         df (:py:class:`pandas.DataFrame`): The DataFrame to remove outliers from.
         column (str): Name of the column that contains outliers.
         cutoff (int/float): A number as a cutoff for outliers.
-        left_tail (bool): If True, remove the left tail of the distribution. Otherwise, remove the right tail.
+        left_tail (bool): If True, remove the left tail of the distribution. Otherwise, remove the
+        right tail.
 
     Returns:
         :py:class:`pandas.DataFrame`: The DataFrame after removing outliers.
@@ -57,10 +64,7 @@ def is_en(text):
     """
     en_regex = re.compile(r'[a-zA-Z1-9]')
     match = en_regex.match(text)
-    if match:
-        return True
-    else:
-        return False
+    return bool(match)
 
 
 def drop_non_en_content(df, content_column):
