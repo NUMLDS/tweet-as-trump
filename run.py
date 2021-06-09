@@ -6,7 +6,7 @@ import yaml
 
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
 from src import model
-from src.add_tweets import TweetManager, create_db
+from src.add_tweets import create_db
 from src.clean import remove_outliers, drop_empty_content, drop_non_en_content
 from src.process import process_data
 from src.read import read_data, combine_data
@@ -15,10 +15,9 @@ from src.s3 import upload_file_to_s3
 logging.config.fileConfig('config/logging/local.conf', disable_existing_loggers=False)
 logger = logging.getLogger('tweets-pipeline')
 
-
 if __name__ == '__main__':
     # Add parsers for creating a database and adding tweets to it
-    parser = argparse.ArgumentParser(description='Create database or upload data to s3')
+    parser = argparse.ArgumentParser(description="Landing data in S3, creating database, and running model pipeline")
     subparsers = parser.add_subparsers(dest='subparser_name')
 
     # Sub-parser for uploading data to s3
@@ -29,12 +28,6 @@ if __name__ == '__main__':
     # Sub-parser for creating a database
     sb_create = subparsers.add_parser('create_db', description='Create database')
     sb_create.add_argument('--engine_string', default=SQLALCHEMY_DATABASE_URI,
-                           help='SQLAlchemy connection URI for database')
-
-    # Sub-parser for ingesting new data
-    sb_ingest = subparsers.add_parser('ingest', description='Add data to database')
-    sb_ingest.add_argument('--filepath', help='File path of the csv file to be ingested')
-    sb_ingest.add_argument('--engine_string', default=SQLALCHEMY_DATABASE_URI,
                            help='SQLAlchemy connection URI for database')
 
     # Sub-parser for model pipeline
@@ -50,12 +43,9 @@ if __name__ == '__main__':
 
     if sp_used == 'upload_data':
         upload_file_to_s3(args.local_path, args.s3path)
+
     elif sp_used == 'create_db':
         create_db(args.engine_string)
-    elif sp_used == 'ingest':
-        tm = TweetManager(engine_string=args.engine_string)
-        tm.add_from_csv(filepath=args.filepath)
-        tm.close()
 
     elif sp_used == "pipeline":
         # Load configuration file for parameters
@@ -80,6 +70,7 @@ if __name__ == '__main__':
             df = drop_empty_content(df, **config['clean']['drop_empty_content'])
             output = drop_non_en_content(df, **config['clean']['drop_non_en_content'])
         elif args.step == 'train':
+            model.set_seed(**config['model']['set_seed'])
             train_contents, test_contents, train_labels, test_labels = model.train_test_split(
                 input, **config['model']['train_test_split'])
             vocab_size = model.fit_tokenizer(train_contents, **config['model']['fit_tokenizer'])
@@ -87,7 +78,7 @@ if __name__ == '__main__':
             test_data = model.tokenize(test_contents, **config['model']['tokenize'])
             lstm_model = model.compile_model(vocab_size, **config['model']['compile_model'])
             model.fit_model(lstm_model, train_data, train_labels, **config['model']['fit_model'])
-            mape = model.calculate_mape(lstm_model, test_data, test_labels)
+            model.calculate_mape(test_data, test_labels, **config['model']['calculate_mape'])
 
         # Save output DataFrame to a csv
         if args.output is not None:
