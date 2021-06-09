@@ -131,7 +131,8 @@ def tokenize(contents, tokenizer_path, padding_type, max_length):
     return result
 
 
-def compile_model(vocab_size, embedding_params, lstm_params, dense_params, output_params, dropout, compile_params):
+def compile_model(vocab_size, embedding_params, lstm_params, dense_params, output_params, dropout,
+                  compile_params):
     """Specify the LSTM model architecture and compile the model.
 
     Args:
@@ -151,14 +152,14 @@ def compile_model(vocab_size, embedding_params, lstm_params, dense_params, outpu
 
     """
     # Define model
-    model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(input_dim=vocab_size, **embedding_params),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(**lstm_params)),
-        tf.keras.layers.GlobalMaxPooling1D(),
-        tf.keras.layers.Dropout(dropout),
-        tf.keras.layers.Dense(**dense_params),
-        tf.keras.layers.Dropout(dropout),
-        tf.keras.layers.Dense(**output_params)
+    model = keras.Sequential([
+        keras.layers.Embedding(input_dim=vocab_size, **embedding_params),
+        keras.layers.Bidirectional(keras.layers.LSTM(**lstm_params)),
+        keras.layers.GlobalMaxPooling1D(),
+        keras.layers.Dropout(dropout),
+        keras.layers.Dense(**dense_params),
+        keras.layers.Dropout(dropout),
+        keras.layers.Dense(**output_params)
     ])
 
     # Compile model
@@ -176,7 +177,9 @@ def fit_model(model, train_data, train_labels, epochs, verbose, validation_split
         train_labels (:py:class:`numpy.array`): The training labels.
         epochs (int): Number of iterations to train the model.
         verbose (int): Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
-        validation_split (float): Fraction of the training data to be used as validation data.
+        validation_split (float): Fraction of the training data to be used as validation data. Note
+        that the validation data is selected from the last samples of the training data, and thus
+        the process is deterministic.
         model_path (str): Path to save the trained model.
 
     Returns:
@@ -211,14 +214,10 @@ def calculate_mape(test_data, test_labels, fitted_model_path, output_path):
 
     logger.info("Calculating predictions using %s test samples", len(test_labels))
     pred = np.round(model.predict(test_data))
-    mape = round(float(np.mean(abs(pred - test_labels) / test_labels) * 100), 2)
-    logger.info("Test MAPE: " + str(mape))
+    mape = float(np.mean(abs(pred - test_labels) / test_labels) * 100)
+    logger.info("Test MAPE: %s", mape)
 
     mape_dict = {"mape": mape}
-    try:
-        logger.info("Saving calculated result")
-        with open(output_path, 'w') as f:
-            yaml.dump(mape_dict, f)
-    except Exception as e:
-        logger.error("Unable to save result. Here is the original error: %s", e)
+    with open(output_path, 'w') as f:
+        yaml.dump(mape_dict, f)
     logger.info("Result saved to %s", output_path)
