@@ -180,6 +180,16 @@ docker run -it \
     tweets_data run.py create_db
 ```
 
+To access the database using MySQL:
+```bash
+docker run -it --rm \
+    mysql:5.7.33 \
+    mysql \
+    -h$MYSQL_HOST \
+    -u$MYSQL_USER \
+    -p$MYSQL_PASSWORD
+```
+
 ## Model pipeline
 A `Makefile` is provided to streamline the model pipeline.
 
@@ -212,4 +222,40 @@ To run the entire model pipeline (`image`, `train`, `remove`) in one command:
 ```bash
 make pipeline
 ```
+
+### 6. Run unit tests
+The same image can be used to run unit tests to ensure functions used in the pipeline are functioning correctly:
+```bash
+make test
+```
+
+## Web Application
+
+### 1. Build image
+```bash
+docker build -f app/Dockerfile -t tweets_app .
+```
+
+### 2. Running with RDS
+Make sure you are still connected to the [Northwestern VPN](#3-connect-to-northwestern-vpn) and have already configured the [RDS-related environment variables](#configure-environment-variables). Then, to run the app with the database on RDS:
+```bash
+docker run \
+    -e MYSQL_HOST \
+    -e MYSQL_PORT \
+    -e MYSQL_USER \
+    -e MYSQL_PASSWORD \
+    -e DATABASE_NAME \
+    -p 5000:5000 tweets_app
+```
+Once the app starts running, you may copy and paste this URL http://0.0.0.0:5000/ to a browser and start using the app. Your text inputs and their corresponding predictions will be saved in RDS database.
+
+### 3. Running with local database
+To run the app with the local SQLite database initialized in the [data acquisition section above](#5-initialize-database-locally):
+```bash
+docker run --mount type=bind,source="$(pwd)",target=/app -p 5000:5000 tweets_app
+```
+Again, once the app starts running, you may copy and paste this URL http://0.0.0.0:5000/ to a browser and start using the app. Your text inputs and their corresponding predictions will be saved in the local SQLite database.
+
+
+
 
