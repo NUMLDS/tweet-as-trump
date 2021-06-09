@@ -3,18 +3,10 @@ import re
 
 import boto3
 import botocore
+import pandas as pd
 
-logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s', level=logging.DEBUG)
-logging.getLogger("botocore").setLevel(logging.ERROR)
-logging.getLogger("s3transfer").setLevel(logging.ERROR)
-logging.getLogger("urllib3").setLevel(logging.ERROR)
-logging.getLogger("boto3").setLevel(logging.ERROR)
-logging.getLogger("asyncio").setLevel(logging.ERROR)
-logging.getLogger("aiobotocore").setLevel(logging.ERROR)
-logging.getLogger("s3fs").setLevel(logging.ERROR)
-
-
-logger = logging.getLogger('s3')
+logger = logging.getLogger(__name__)
+logger.setLevel("INFO")
 
 
 def parse_s3(s3path):
@@ -48,7 +40,6 @@ def upload_file_to_s3(local_path, s3path):
         None
 
     """
-
     s3bucket, s3_just_path = parse_s3(s3path)
 
     s3 = boto3.resource("s3")
@@ -60,3 +51,22 @@ def upload_file_to_s3(local_path, s3path):
         logger.error('Please provide AWS credentials via AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables.')
     else:
         logger.info('Data uploaded from %s to %s', local_path, s3path)
+
+
+def download_to_pandas(s3path):
+    """Download file from S3 to a pandas DataFrame.
+
+    Args:
+        s3path (str): The S3 path that points to the file.
+
+    Returns:
+        :py:class:`pandas.DataFrame`: The downloaded data as a DataFrame object.
+
+    """
+    try:
+        df = pd.read_csv(s3path)
+        logger.info('Data downloaded from %s to pandas DataFrame', s3path)
+    except botocore.exceptions.NoCredentialsError:
+        logger.error('Please provide AWS credentials via AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables.')
+    else:
+        return df

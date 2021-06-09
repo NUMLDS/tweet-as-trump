@@ -1,0 +1,87 @@
+read:
+  read_data:
+    file1:
+      s3path: s3://2021-msia423-yu-dian/realdonaldtrump.csv
+      columns:
+        - date
+        - content
+        - retweets
+    file2:
+      s3path: s3://2021-msia423-yu-dian/trump_tweets.csv
+      columns:
+        - date
+        - text
+        - retweets
+  combine_data:
+    columns:
+      - date
+      - content
+      - retweets
+    date_col: date
+    start_date: "2017"
+    end_date: "2021-01-08"
+
+process:
+  process_data:
+    content_column: content
+    nltk_data_path: data/external/nltk_data
+
+clean:
+  remove_outliers:
+    column: retweets
+    cutoff: 2500
+  drop_empty_content:
+    content_column: content
+  drop_non_en_content:
+    content_column: content
+
+model:
+  set_seed:
+    random_seed: 2021423
+  train_test_split:
+    content_column: content
+    label_column: retweets
+    test_size: 0.2
+    random_state: 2021423
+  fit_tokenizer:
+    oov_token: <OOV>
+    tokenizer_path: models/tokenizer.pickle
+  tokenize:
+    tokenizer_path: models/tokenizer.pickle
+    padding_type: post
+    max_length: 45
+  compile_model:
+    embedding_params:
+      output_dim: 16
+      input_length: 45
+    lstm_params:
+      units: 64
+      return_sequences: True
+      dropout: 0.1
+      recurrent_dropout: 0.1
+    dense_params:
+      units: 24
+      activation: relu
+    output_params:
+      units: 1
+      activation: relu
+    dropout: 0.1
+    compile_params:
+      loss: mean_absolute_percentage_error
+      optimizer: adam
+  fit_model:
+    epochs: 12
+    verbose: 2
+    validation_split: 0.25
+    model_path: models/lstm_model
+  calculate_mape:
+    fitted_model_path: models/lstm_model
+    output_path: models/performance.yaml
+
+predict:
+  predict:
+    nltk_data_path: data/external/nltk_data
+    tokenizer_path: models/tokenizer.pickle
+    padding_type: post
+    max_length: 45
+    fitted_model_path: models/lstm_model

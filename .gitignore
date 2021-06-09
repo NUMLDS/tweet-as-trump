@@ -12,3 +12,6 @@ venv
 !data/external/
 config/local
 !.gitkeep
+copilot/
+*.csv
+*.db
