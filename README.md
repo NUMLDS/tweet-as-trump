@@ -24,6 +24,17 @@ QA Contributions: Hanyu Cai
   * [6. Initialize database in RDS instance](#6-initialize-database-in-rds-instance)
     + [Configure environment variables](#configure-environment-variables)
     + [Create database and table schema](#create-database-and-table-schema)
+- [Model pipeline](#model-pipeline)
+  * [1. Build image](#1-build-image)
+  * [2. Configure S3 credentials](#2-configure-s3-credentials)
+  * [3. Run model pipeline](#3-run-model-pipeline)
+  * [4. Remove data artifacts](#4-remove-data-artifacts)
+  * [5. Run everything](#5-run-everything)
+  * [6. Run unit tests](#6-run-unit-tests)
+- [Web application](#web-application)
+  * [1. Build image](#1-build-image)
+  * [2. Running with RDS](#2-running-with-rds)
+  * [3. Running with local database](#3-running-with-local-database)
 
 <!-- tocstop -->
 
@@ -63,39 +74,30 @@ Since the web app’s purpose is to create a fun user experience, Daily Active U
 ├── config                            <- Directory for configuration files 
 │   ├── local/                        <- Directory for keeping environment variables and other local configurations that *do not sync** to Github 
 │   ├── logging/                      <- Configuration of python loggers
-│   ├── flaskconfig.py                <- Configurations for Flask API 
+│   ├── flaskconfig.py                <- Configurations for Flask API
+│   ├── config.yaml                   <- Configurations for model pipeline
 │
 ├── data                              <- Folder that contains data used or generated. Only the external/ and sample/ subdirectories are tracked by git. 
 │   ├── raw/                          <- Raw data downloaded from Kaggle, will be synced with git
-│   ├── external/                     <- External data sources, usually reference data,  will be synced with git
-│   ├── sample/                       <- Sample data used for code development and testing, will be synced with git
+│   ├── external/                     <- External data sources, used to store NLTK data, will be synced with git
+│   ├── pipeline/                     <- Data artifacts in model pipeline
 │
-├── deliverables/                     <- Any white papers, presentations, final work products that are presented or delivered to a stakeholder 
+├── deliverables/                     <- Presentation slides 
 │
-├── docs/                             <- Sphinx documentation based on Python docstrings. Optional for this project. 
-│
-├── figures/                          <- Generated graphics and figures to be used in reporting, documentation, etc
+├── figures/                          <- Figures for documentation
 │
 ├── models/                           <- Trained model objects (TMOs), model predictions, and/or model summaries
 │
-├── notebooks/
-│   ├── archive/                      <- Develop notebooks no longer being used.
-│   ├── deliver/                      <- Notebooks shared with others / in final state
-│   ├── develop/                      <- Current notebooks being used in development.
-│   ├── template.ipynb                <- Template notebook for analysis with useful imports, helper functions, and SQLAlchemy setup. 
-│
-├── reference/                        <- Any reference material relevant to the project
-│
 ├── src/                              <- Source data for the project 
-│   ├── add_tweets.py/                <- Python script for creating database and adding data
-│   ├── s3.py/                        <- Python script for uploading raw data to S3
 │
 ├── test/                             <- Files necessary for running model tests (see documentation below) 
-│   ├── test_s3.py/                   <- Python script for testing s3-related functionalities
 │
 ├── app.py                            <- Flask wrapper for running the model 
-├── run.py                            <- Simplifies the execution of one or more of the src scripts  
+│
+├── run.py                            <- Simplifies the execution of the src scripts 
+│
 ├── requirements.txt                  <- Python package dependencies 
+│
 ├── Dockerfile                        <- Dockerfile for building image to upload data to s3 and create database
 ```
 
@@ -193,6 +195,8 @@ docker run -it --rm \
 ## Model pipeline
 A `Makefile` is provided to streamline the model pipeline.
 
+Notice that although the developer followed [Keras’s documentation](https://keras.io/getting_started/faq/#how-can-i-obtain-reproducible-results-using-keras-during-development) to set seeds for different random number generators (Python, Numpy, and TensorFlow) as well as the `PYTHONHASHSEED` environment variable, the training results still vary slightly everytime. The developer has communicated with his course instructors about this issue and agreed that it is okay if his model pipeline is not reproducible.
+
 ### 1. Build image
 ```bash
 make image
@@ -209,7 +213,9 @@ export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY"
 ```bash
 make train
 ```
-This will `read` the data, `process` the data, `clean` the data, and `train` the neural network model. Data artifacts will be saved in `data/pipeline/`, and trained model objects along with model performance metric will be saved in `model/`.
+This will `read` the data from S3, `process` the texts in the data, `clean` the data, and `train` the neural network model. Data artifacts will be saved in `data/pipeline`, and trained model objects along with model performance metric will be saved in `model/`.
+
+Note that the `process` step utilizes NLTK corpora data that has already been downloaded to `data/external/nltk_data`. If you want to download the data again or to a different location, you may alter the `config/config.yaml` file to set the `download` argument of the `process_data()` function to `True`, and optionally specify a new path to download the NLTK data with the `nltk_data_path` argument.
 
 ### 4. Remove data artifacts
 To remove `raw.csv`, `processed.csv`, and `cleaned.csv` in `data/pipeline/`:
@@ -255,7 +261,4 @@ To run the app with the local SQLite database initialized in the [data acquisiti
 docker run --mount type=bind,source="$(pwd)",target=/app -p 5000:5000 tweets_app
 ```
 Again, once the app starts running, you may copy and paste this URL http://0.0.0.0:5000/ to a browser and start using the app. Your text inputs and their corresponding predictions will be saved in the local SQLite database.
-
-
-
 
