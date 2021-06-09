@@ -234,6 +234,7 @@ The same image can be used to run unit tests to ensure functions used in the pip
 ```bash
 make test
 ```
+Notice that this raises a warning within the TensorFlow library: `DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses`. This is still present despite using the latest version of TensorFlow (2.5.0). However, this deprecation warning does not affect this project.
 
 ## Web Application
 
