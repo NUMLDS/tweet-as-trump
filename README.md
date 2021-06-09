@@ -31,12 +31,12 @@ QA Contributions: Hanyu Cai
 
 ### 1. Vision
 
-Social media platforms have made it easier than ever for political figures and celebrities to make their voices heard. Since Donald J. Trump declared his candidacy in June 2015, he has used Twitter to criticize, praise, persuade, entertain, and establish his version of events.  Whether one agrees or disagrees with the former president’s policies and ideas, one may be curious about what it is like to be such a controversial figure on social media and what kind of posts receive the most attention. This web application aims to offer its users the opportunity to hypothetically post tweets in the shoes of Mr. Trump and see the number of retweets they could expect to get. After having fun trying different tweets on the app, the users would hopefully think a little more about the controversial and inciting nature of social media posts.
+Social media platforms have made it easier than ever for political figures and celebrities to make their voices heard. Since Donald J. Trump stepped into the White House in January 2017, he has used Twitter to criticize, praise, persuade, entertain, and establish his version of events. The platform eventually suspended his account permanently in January 2021 because of his controversial tweets. Whether one agrees or disagrees with the former president’s policies and ideas, one may be curious about what it is like to be such a controversial figure on social media and what kind of posts receive the most attention. This web application aims to offer its users the opportunity to hypothetically post tweets in the shoes of Mr. Trump and see the number of retweets they could expect to get. After having fun trying different tweets on the app, the users would hopefully think a little more about the controversial and inciting nature of social media posts.
 
 ### 2. Mission
 The final web app would enable the user to enter a tweet—a small paragraph with less than 280 characters. After the user finishes, the app would output the predicted number of retweets if Mr. Trump tweeted the message.
 
-The most crucial step in this project is to train a model using Mr. Trump’s previous tweets’ retweets data. The dataset I selected is collected and published on Kaggle by Austin Reese (https://www.kaggle.com/austinreese/trump-tweets). For data pre-processing and model architecture, I expect to apply Natural Language Processing (NLP) techniques, including but not limited to tokenization, embeddings, and long short-term memory (LSTM) models. The final model would take a string of any length smaller than 280 characters as an input and output the predicted number of retweets.
+The most crucial step in this project is to train a model using Mr. Trump’s previous tweets’ retweets data. The datasets I selected is collected and published on Kaggle by Austin Reese (https://www.kaggle.com/austinreese/trump-tweets) and Gabriel Preda (https://www.kaggle.com/gpreda/trump-tweets). I plan to combine the two datasets to get as much Trump's tweets as possible between January 2017 to January 2021. For data pre-processing and model architecture, I expect to apply Natural Language Processing (NLP) techniques, including but not limited to tokenization, embeddings, and long short-term memory (LSTM) models. The final model would take a string of any length smaller than 280 characters as an input and output the predicted number of retweets.
 
 It is also worthy of mentioning that the model developed in this project is readily applicable to social media strategy making. It is easy to retrain the model using a new celebrity or policy maker’s social media data. Then, before the user and his/her social media team publish a new post, they can use the application to select the appropriate topic and wording that would attract the most attention. This possibility is not part of my core vision but makes monetization reasonably easy.
 
@@ -101,7 +101,11 @@ Since the web app’s purpose is to create a fun user experience, Daily Active U
 
 ## Data acquisition
 ### 1. Download raw data from Kaggle
-To download the data used for this app, go to the [Trump Tweets dataset page](https://www.kaggle.com/austinreese/trump-tweets?select=realdonaldtrump.csv) on Kaggle. Click on the download button on the top right, and unzip the downloaded zip file. We will only use the `realdonaldtrump.csv` dataset, a copy of which is synced to `data/raw/` folder in the project directory.
+First, go to the first dataset's [page on Kaggle](https://www.kaggle.com/austinreese/trump-tweets?select=realdonaldtrump.csv). Click on the download button on the top right, and unzip the downloaded zip file. We will only use the `realdonaldtrump.csv` dataset within the zip file.
+
+Next, go to the second dataset's [page on Kaggle](https://www.kaggle.com/gpreda/trump-tweets). Click on the download button on the top right, and unzip the downloaded zip file to get the `trump_tweets.csv` dataset. 
+
+A cope of each CSV file is synced to the `data/raw/` folder in the project directory.
 
 ### 2. Build Docker image
 To build the Docker image for data acquisition, run the command below in the project root directory:
@@ -121,16 +125,16 @@ export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY"
 ```
 
 #### Upload file to S3
-To upload the `realdonaltrump.csv` file to a configurable S3 bucket:
-```bash
-docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data run.py upload_data
-```
-
-You may also specify the `--s3_path` and `--local_path` options, the default of which are respectively `"s3://2021-msia423-yu-dian/realdonaldtrump.csv"` and `"data/raw/realdonaldtrump.csv"`:
+To upload the raw data files to a configurable S3 bucket:
 ```bash
 docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data run.py upload_data \
-    --s3path={your_s3_path} \
-    --local_path={your_local_path}
+    --local_path={your_local_path} --s3path={your_s3_path}
+```
+
+For example, to upload the `realdonaldtrump.csv` file:
+```bash
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY tweets_data run.py upload_data \
+    --local_path="data/raw/realdonaldtrump.csv" --s3path="s3://2021-msia423-yu-dian/realdonaldtrump.csv"
 ```
 
 ### 5. Initialize database locally
@@ -175,3 +179,37 @@ docker run -it \
     -e DATABASE_NAME \
     tweets_data run.py create_db
 ```
+
+## Model pipeline
+A `Makefile` is provided to streamline the model pipeline.
+
+### 1. Build image
+```bash
+make image
+```
+
+### 2. Configure S3 credentials
+If you havn't, load S3 credentials as environment variables in order to read data from S3:
+```bash
+export AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY_ID"
+export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY"
+```
+
+### 3. Run model pipeline
+```bash
+make train
+```
+This will `read` the data, `process` the data, `clean` the data, and `train` the neural network model. Data artifacts will be saved in `data/pipeline/`, and trained model objects along with model performance metric will be saved in `model/`.
+
+### 4. Remove data artifacts
+To remove `raw.csv`, `processed.csv`, and `cleaned.csv` in `data/pipeline/`:
+```bash
+make remove
+```
+
+### 5. Run everything
+To run the entire model pipeline (`image`, `train`, `remove`) in one command:
+```bash
+make pipeline
+```
+
