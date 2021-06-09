@@ -1,3 +1,9 @@
+"""Simplifies the execution of the src scripts.
+
+Provides options to acquire data, upload to S3, create database, and run model pipeline.
+
+"""
+
 import argparse
 import logging.config
 
@@ -49,9 +55,12 @@ if __name__ == '__main__':
 
     elif sp_used == "pipeline":
         # Load configuration file for parameters
-        with open(args.config, "r") as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        logger.info("Configuration file loaded from %s" % args.config)
+        try:
+            with open(args.config, "r") as f:
+                config = yaml.load(f, Loader=yaml.FullLoader)
+            logger.info("Configuration file loaded from %s", args.config)
+        except FileNotFoundError:
+            logger.error("Cannot find configuration file from the path: %s", args.config)
 
         # Read input csv into a DataFrame
         if args.input is not None:

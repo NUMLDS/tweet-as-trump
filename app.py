@@ -1,4 +1,4 @@
-"""The Flask web application script.
+"""Flask wrapper for running the model.
 
 This script defines how the web application works and renders HTML templates.
 
@@ -43,10 +43,15 @@ def tweet():
     tweet_content = request.form['tweet_content']
     logger.info("User input is '%s'", tweet_content)
 
+    # Load model configuration file
+    try:
+        with open(app.config["MODEL_CONFIG"], "r") as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+            logger.info("Configuration file loaded from %s", app.config["MODEL_CONFIG"])
+    except FileNotFoundError:
+        logger.error("Cannot find configuration file from the path: %s", app.config["MODEL_CONFIG"])
+
     # Calculate prediction
-    with open(app.config["MODEL_CONFIG"], "r") as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-    logger.info("Configuration file loaded")
     prediction = predict(tweet_content, **config["predict"]["predict"])
 
     # Save user input and predicted retweets to database
