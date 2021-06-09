@@ -24,6 +24,7 @@ read:
 process:
   process_data:
     content_column: content
+    nltk_data_path: data/external/nltk_data
 
 clean:
   remove_outliers:
@@ -35,6 +36,8 @@ clean:
     content_column: content
 
 model:
+  set_seed:
+    random_seed: 2021423
   train_test_split:
     content_column: content
     label_column: retweets
@@ -71,10 +74,14 @@ model:
     verbose: 2
     validation_split: 0.25
     model_path: models/lstm_model
+  calculate_mape:
+    fitted_model_path: models/lstm_model
+    output_path: models/performance.yaml
 
 predict:
   predict:
+    nltk_data_path: data/external/nltk_data
     tokenizer_path: models/tokenizer.pickle
     padding_type: post
     max_length: 45
-    fitted_model: models/lstm_model
+    fitted_model_path: models/lstm_model
