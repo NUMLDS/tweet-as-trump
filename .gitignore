@@ -13,3 +13,5 @@ venv
 config/local
 !.gitkeep
 copilot/
+*.csv
+*.db
