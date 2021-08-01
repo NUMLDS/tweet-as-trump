@@ -10,7 +10,7 @@ import yaml
 from flask import Flask
 from flask import render_template, request
 
-from src.add_tweets import TweetManager
+from src.database import TweetManager
 from src.predict import predict
 
 # Initialize the Flask application
@@ -41,18 +41,20 @@ def tweet():
     """Collect user input, calculate prediction, and persist data to database."""
     # Get user input
     tweet_content = request.form['tweet_content']
-    logger.info("User input is '%s'", tweet_content)
+    logger.info("User entered '%s'", tweet_content)
 
     # Load model configuration file
     try:
         with open(app.config["MODEL_CONFIG"], "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
-            logger.info("Configuration file loaded from %s", app.config["MODEL_CONFIG"])
+            logger.info("Model configurations loaded from %s", app.config["MODEL_CONFIG"])
     except FileNotFoundError:
         logger.error("Cannot find configuration file from the path: %s", app.config["MODEL_CONFIG"])
 
     # Calculate prediction
+    logger.info("Calculating predictions...")
     prediction = predict(tweet_content, **config["predict"]["predict"])
+    logger.info("The predicted number of retweet is %s", prediction)
 
     # Save user input and predicted retweets to database
     try:

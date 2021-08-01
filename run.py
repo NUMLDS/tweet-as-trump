@@ -1,6 +1,6 @@
 """Simplifies the execution of the src scripts.
 
-Provides options to acquire data, upload to S3, create database, and run model pipeline.
+Provides options to create database and run model pipeline.
 
 """
 
@@ -12,24 +12,18 @@ import yaml
 
 from config.flaskconfig import SQLALCHEMY_DATABASE_URI
 from src import model
-from src.add_tweets import create_db
+from src.database import create_db
 from src.clean import remove_outliers, drop_empty_content, drop_non_en_content
 from src.process import process_data
 from src.read import read_data, combine_data
-from src.s3 import upload_file_to_s3
 
 logging.config.fileConfig('config/logging/local.conf', disable_existing_loggers=False)
 logger = logging.getLogger('tweets-pipeline')
 
 if __name__ == '__main__':
     # Add parsers for creating a database and adding tweets to it
-    parser = argparse.ArgumentParser(description="Landing data in S3, creating database, and running model pipeline")
+    parser = argparse.ArgumentParser(description="Creating database and running model pipeline")
     subparsers = parser.add_subparsers(dest='subparser_name')
-
-    # Sub-parser for uploading data to s3
-    sb_upload = subparsers.add_parser('upload_data', description='Add data to s3 bucket')
-    sb_upload.add_argument('--local_path', help='local file path where the data is stored')
-    sb_upload.add_argument('--s3path', help='s3 file path to upload data')
 
     # Sub-parser for creating a database
     sb_create = subparsers.add_parser('create_db', description='Create database')
@@ -38,19 +32,20 @@ if __name__ == '__main__':
 
     # Sub-parser for model pipeline
     sb_pipeline = subparsers.add_parser('pipeline', description='Run model pipeline')
-    sb_pipeline.add_argument('step', help='Which step to run', choices=['read', 'process', 'clean', 'train'])
-    sb_pipeline.add_argument('--config', default='config/config.yaml', help='Path to configuration file')
-    sb_pipeline.add_argument('--input', '-i', default=None, help='Path to input data')
-    sb_pipeline.add_argument('--output', '-o', default=None, help='Path to save output CSV (optional, default=None)')
+    sb_pipeline.add_argument('step', help='Which step to run',
+                             choices=['read', 'process', 'clean', 'train'])
+    sb_pipeline.add_argument('--config', default='config/config.yaml',
+                             help='Path to configuration file')
+    sb_pipeline.add_argument('--input', '-i', default=None,
+                             help='Path to input data')
+    sb_pipeline.add_argument('--output', '-o', default=None,
+                             help='Path to save output CSV (optional, default=None)')
 
     # Interpret and execute commands
     args = parser.parse_args()
     sp_used = args.subparser_name
 
-    if sp_used == 'upload_data':
-        upload_file_to_s3(args.local_path, args.s3path)
-
-    elif sp_used == 'create_db':
+    if sp_used == 'create_db':
         create_db(args.engine_string)
 
     elif sp_used == "pipeline":
