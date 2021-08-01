@@ -6,18 +6,17 @@ DataFrames while filtering data by date.
 """
 
 import logging
-
-from src.s3 import download_to_pandas
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
 
-def read_data(s3path, columns):
-    """Read data from S3 and select specified columns.
+def read_data(path, columns):
+    """Read data from a path and keep only specified columns.
 
     Args:
-        s3path (str): The S3 path that points to the file.
+        path (str): The path that points to the file.
         columns (:obj:`list` of :obj:`str`): Names of the columns to use.
 
     Returns:
@@ -25,7 +24,7 @@ def read_data(s3path, columns):
 
     """
     # Read into dataframe
-    df = download_to_pandas(s3path)
+    df = pd.read_csv(path)
 
     # Select columns
     df = df[columns]

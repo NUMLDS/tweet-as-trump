@@ -1,13 +1,13 @@
 read:
   read_data:
     file1:
-      s3path: s3://2021-msia423-yu-dian/realdonaldtrump.csv
+      path: data/raw/realdonaldtrump.csv
       columns:
         - date
         - content
         - retweets
     file2:
-      s3path: s3://2021-msia423-yu-dian/trump_tweets.csv
+      path: data/raw/trump_tweets.csv
       columns:
         - date
         - text

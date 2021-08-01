@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, BigInteger, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import pandas as pd
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
